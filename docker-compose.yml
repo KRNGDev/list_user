@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  app_user:
+    build: listadousuario
+    mem_limit: 512m
+    ports:
+      - "8085:8085"
+    environment:
+      DB_URL: jdbc:mysql://list_user:3306/listado_usuario?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: root
+      DB_PASSWORD: Operpre.01
+    restart: always
+    depends_on:
+      list_user:
+          condition: service_healthy
+  list_user:
+    image: mysql:8.0.33 
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Operpre.01
+      MYSQL_PASSWORD: Operpre.01
+      MYSQL_DATABASE: listado_usuario
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
